@@ -1,101 +1,118 @@
-/* Estilização Geral */
 body {
     font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 20px;
-    background-color: #f4f4f9;
 }
 
-h1, h2 {
-    color: #333;
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form {
+h1 {
+    text-align: center;
     margin-bottom: 20px;
 }
 
-label {
-    font-weight: bold;
+form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
-input, select, button {
+input[type="text"],
+select {
+    flex: 1;
     padding: 10px;
-    margin: 5px 0 15px 0;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 button {
-    background-color: #4CAF50;
+    padding: 10px 15px;
+    background-color: #1e90ff;
     color: white;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #0d6efd;
 }
 
-/* Modal de Treinos */
-#modalTreinos {
-    display: none;
+.lista-alunos .aluno {
+    background: #e9f5ff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-left: 5px solid #1e90ff;
+    border-radius: 4px;
+}
+
+.aluno button {
+    margin-top: 5px;
+    background-color: #28a745;
+}
+
+.aluno button:hover {
+    background-color: #218838;
+}
+
+/* Modal */
+.modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
-#modalTreinos div {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.hidden {
+.modal.hidden {
     display: none;
 }
 
-/* Lista de Alunos */
-#listaAlunos {
-    margin-top: 20px;
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
 }
 
-.aluno {
-    background-color: #fff;
-    border: 1px solid #ddd;
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
     padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
 }
 
-button {
-    background-color: #2196F3;
+li.concluido {
+    text-decoration: line-through;
+    color: #6c757d;
+    background-color: #d4edda;
 }
 
-button:hover {
-    background-color: #0b7dda;
-}
-
-/* Estilo do gráfico */
-#graficoProgresso {
-    margin-top: 40px;
-    width: 100%;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-canvas {
-    max-width: 100%;
-    max-height: 400px;
-}
-
-/* Modais e Gráficos */
-button + button {
-    margin-left: 10px;
-}
