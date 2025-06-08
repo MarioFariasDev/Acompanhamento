@@ -1,130 +1,103 @@
-// Lista de alunos
 let alunos = JSON.parse(localStorage.getItem("alunos")) || [];
 
-// Ao carregar a página, renderiza os alunos
-window.onload = () => {
-    renderAlunos();
-};
+function salvarAlunos() {
+    localStorage.setItem("alunos", JSON.stringify(alunos));
+}
 
-// Adiciona novo aluno
-document.getElementById("formAluno").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const nome = document.getElementById("nomeAluno").value.trim();
-    const nivel = document.getElementById("nivelAluno").value;
-    const objetivo = document.getElementById("objetivoAluno").value;
-
-    if (!nome) return alert("Digite o nome do aluno");
-
-    const novoAluno = {
-        nome,
-        nivel,
-        objetivo,
-        treinos: gerarTreinoPersonalizado(nivel, objetivo),
-    };
-
-    alunos.push(novoAluno);
-    salvarDados();
-    renderAlunos();
-
-    // Limpa o formulário
-    document.getElementById("formAluno").reset();
-});
-
-// Renderiza a lista de alunos
 function renderAlunos() {
-    const lista = document.getElementById("listaAlunos");
-    lista.innerHTML = "";
-
-    alunos.forEach((aluno) => {
+    const container = document.getElementById("listaAlunos");
+    container.innerHTML = "";
+    alunos.forEach((aluno, index) => {
         const div = document.createElement("div");
         div.className = "aluno";
-
-        const nome = document.createElement("span");
-        nome.textContent = `${aluno.nome} - ${aluno.objetivo}`;
-
-        const btnVer = document.createElement("button");
-        btnVer.textContent = "Ver Treino";
-        btnVer.onclick = () => verTreinos(aluno.nome);
-
-        div.appendChild(nome);
-        div.appendChild(btnVer);
-        lista.appendChild(div);
+        div.innerHTML = `
+      <strong>${aluno.nome}</strong> (${aluno.nivel})<br>
+      <button onclick="verTreino(${index})">Ver treino</button>
+    `;
+        container.appendChild(div);
     });
 }
 
-// Mostra os treinos no modal
-function verTreinos(nome) {
-    const aluno = alunos.find((a) => a.nome === nome);
-    if (!aluno) return alert("Aluno não encontrado.");
+function gerarTreinos(nivel) {
+    const treinos = {
+        iniciante: [
+            "Caminhada 30min",
+            "Trote leve 2km",
+            "Descanso",
+            "Caminhada 20min + trote 1km",
+            "Trote 3km",
+            "Descanso",
+            "Corrida leve 4km"
+        ],
+        intermediario: [
+            "Corrida leve 5km",
+            "Fartlek 3x(500m rápido / 500m leve)",
+            "Descanso",
+            "Tiros 4x400m",
+            "Corrida moderada 6km",
+            "Descanso",
+            "Longão 8km"
+        ],
+        avancado: [
+            "Intervalado 6x600m",
+            "Corrida moderada 8km",
+            "Descanso ativo (bike 30min)",
+            "Tiros 8x400m",
+            "Corrida forte 5km",
+            "Descanso",
+            "Longão 12km"
+        ]
+    };
+    return treinos[nivel] || [];
+}
+
+function verTreino(index) {
+    const aluno = alunos[index];
+    const treinos = aluno.treinos || gerarTreinos(aluno.nivel);
+    aluno.treinos = treinos;
+    salvarAlunos();
 
     const titulo = document.getElementById("tituloTreinos");
-    titulo.textContent = `Treinos de ${aluno.nome}`;
-
     const lista = document.getElementById("treinosLista");
+    titulo.textContent = `Treinos da semana: ${aluno.nome}`;
     lista.innerHTML = "";
 
-    aluno.treinos.forEach((treino) => {
+    treinos.forEach((treino, i) => {
         const li = document.createElement("li");
         li.textContent = treino;
+        if (aluno.concluidos && aluno.concluidos.includes(i)) {
+            li.classList.add("concluido");
+        }
+        li.addEventListener("click", () => {
+            aluno.concluidos = aluno.concluidos || [];
+            if (aluno.concluidos.includes(i)) {
+                aluno.concluidos = aluno.concluidos.filter(j => j !== i);
+                li.classList.remove("concluido");
+            } else {
+                aluno.concluidos.push(i);
+                li.classList.add("concluido");
+            }
+            salvarAlunos();
+        });
         lista.appendChild(li);
     });
 
     document.getElementById("modalTreinos").classList.remove("hidden");
 }
 
-// Fecha o modal
 function fecharModal() {
     document.getElementById("modalTreinos").classList.add("hidden");
 }
 
-// Gera treino com base no nível e objetivo
-function gerarTreinoPersonalizado(nivel, objetivo) {
-    if (objetivo === "5km") {
-        return [
-            "Dia 1: Caminhada rápida 30 min",
-            "Dia 2: Corrida leve 3 km",
-            "Dia 3: Descanso",
-            "Dia 4: Corrida contínua 4 km",
-            "Dia 5: Descanso",
-            "Dia 6: Intervalado 20 min",
-            "Dia 7: Corrida leve 3 km",
-        ];
-    } else if (objetivo === "10km") {
-        return [
-            "Dia 1: Corrida 5 km leve",
-            "Dia 2: Subidas 6x 200m",
-            "Dia 3: Descanso",
-            "Dia 4: Corrida 7 km ritmo moderado",
-            "Dia 5: Descanso",
-            "Dia 6: Intervalado 5x 800m forte",
-            "Dia 7: Corrida longa 10 km",
-        ];
-    }
-    return ["Treino personalizado não disponível ainda."];
-}
+document.getElementById("formAluno").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nome = document.getElementById("nomeAluno").value;
+    const nivel = document.getElementById("nivelAluno").value;
 
-// Exportar para PDF
-function exportarPDF() {
-    const alunoNome = document.getElementById("tituloTreinos").textContent.replace("Treinos de ", "");
-    const aluno = alunos.find(a => a.nome === alunoNome);
-    if (!aluno) return;
+    alunos.push({ nome, nivel, concluidos: [] });
+    salvarAlunos();
+    renderAlunos();
+    e.target.reset();
+});
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    doc.setFontSize(16);
-    doc.text(`Plano de Treino - ${aluno.nome}`, 10, 20);
-    doc.setFontSize(12);
-
-    aluno.treinos.forEach((treino, i) => {
-        doc.text(`${treino}`, 10, 30 + i * 10);
-    });
-
-    doc.save(`Treino_${aluno.nome}.pdf`);
-}
-
-// Salva no localStorage
-function salvarDados() {
-    localStorage.setItem("alunos", JSON.stringify(alunos));
-}
+renderAlunos();
