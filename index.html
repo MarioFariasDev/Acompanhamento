@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acompanhamento de Corrida</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- jsPDF -->
+</head>
+<body>
+  <h1>Acompanhamento de Corrida</h1>
+
+  <!-- Formulário de cadastro de aluno -->
+  <form id="formAluno">
+    <label for="nomeAluno">Nome do Aluno:</label>
+    <input type="text" id="nomeAluno" required><br>
+
+    <label for="nivelAluno">Nível:</label>
+    <select id="nivelAluno">
+      <option value="iniciante">Iniciante</option>
+      <option value="intermediario">Intermediário</option>
+      <option value="avancado">Avançado</option>
+    </select><br>
+
+    <label for="objetivoAluno">Objetivo:</label>
+    <select id="objetivoAluno">
+      <option value="5km">Correr 5 km</option>
+      <option value="5km_30min">Correr 5 km em até 30 min</option>
+      <option value="5km_20min">Correr 5 km em até 20 min</option>
+      <option value="10km">Correr 10 km</option>
+      <option value="10km_tempo">Melhorar tempo nos 10 km</option>
+      <option value="10km_dist">Aumentar distância além de 10 km</option>
+      <option value="21km">Fazer os primeiros 21 km</option>
+      <option value="42km">Fazer os primeiros 42 km</option>
+    </select><br>
+
+    <button type="submit">Adicionar Aluno</button>
+  </form>
+
+  <h2>Lista de Alunos</h2>
+  <div id="listaAlunos"></div>
+
+  <!-- Modal de treino -->
+  <div id="modalTreinos" class="hidden">
+      <div> <!-- essa div é importante para o layout funcionar -->
+          <h3 id="tituloTreinos"></h3>
+          <ul id="treinosLista"></ul>
+          <button onclick="fecharModal()">Fechar</button>
+          <button onclick="exportarPDF()">Exportar PDF</button>
+      </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
